@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio - Certificates</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Add preload for critical resources -->
+  <link rel="preload" href="styles.css" as="style">
+  <!-- Add preload for first page of images -->
+  <link rel="preload" as="image" href="Certificates/images/microsoft/thumbnails/AI Microsoft Learn-page-1.webp">
+  <link rel="preload" as="image" href="Certificates/images/microsoft/thumbnails/Write your first C# code-page-1.webp">
+  <link rel="preload" as="image" href="Certificates/images/microsoft/thumbnails/Fundamental AI Concepts-page-1.webp">
+</head>
+<body>
+  <nav class="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="certificates.html" class="active">Certificates</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <header>
+<h1>My Certificates</h1>
+      <p>Professional Achievements & Learning Milestones</p>
+    </header>
+
+    <section class="certificates">
+<div class="filters">
+        <div class="search-container">
+          <input type="text" id="search-input" placeholder="Search certificates..." aria-label="Search certificates">
+        </div>
+        <button class="filter-btn active" data-filter="all"><b>All</b></button>
+        <button class="filter-btn" data-filter="freecodecamp"><B>FreeCodeCamp</B></button>
+        <button class="filter-btn" data-filter="hackerrank"><b>HackerRank</button>
+        <button class="filter-btn" data-filter="Microsoft"><b>Microsoft</b></button>
+  <button class="filter-btn" data-filter="other">Other</button>
+</div>
+
+<div id="cert-counter">Showing 1 of 28 certificates</div>
+
+<div class="gallery" id="gallery" role="list" aria-label="Certificate gallery"></div>
+
+<div class="pagination" id="pagination">
+  <button class="page-btn" id="prev-page" disabled>&lt; Previous</button>
+  <div class="page-numbers" id="page-numbers"></div>
+  <button class="page-btn" id="next-page">Next &gt;</button>
+</div>
+
+<div class="popup" id="popup" role="dialog" aria-modal="true" aria-labelledby="popup-desc">
+  <div class="popup-content">
+    <span class="close-btn" onclick="closePopup()" role="button" aria-label="Close certificate">&times;</span>
+    <button class="nav-btn prev-btn" onclick="navigate(-1)">&lt;</button>
+    <button class="nav-btn next-btn" onclick="navigate(1)">&gt;</button>
+    
+    <div class="spinner" id="spinner"></div>
+    <p class="error-message" id="error-message">
+      Failed to load image 
+      <button class="retry-btn" onclick="retryLoading()">Retry</button>
+    </p>
+    <img id="popup-img" src="" alt="Certificate" onload="imageLoaded()" onerror="imageError()">
+    <div class="desc" id="popup-desc"></div>
+    
+    <div class="action-btns">
+      <a id="verify-btn" class="verify-btn" href="#" target="_blank" rel="noopener noreferrer" style="display:none;">
+        Verify Certificate
+      </a>
+      <button id="download-btn" class="download-btn" onclick="downloadCertificate()">
+        Download
+      </button>
+      <button class="share-btn" onclick="shareCertificate()">
+        Share
+      </button>
+    </div>
+  </div>
+</div>
+    </section>
+
+<footer>
+      <div class="social-profiles">
+        <a href="https://www.freecodecamp.org/fccc9f0034a-6d2f-4a92-b8df-840c5312c85f" class="profile-link" target="_blank">
+          <img src="https://design-style-guide.freecodecamp.org/downloads/fcc_secondary_small.svg" alt="freecodecamp" class="profile-logo">
+          <span class="profile-name">freecodecamp</span>
+        </a>
+        <a href="https://github.com/sameermaurya3" class="profile-link" target="_blank">
+          <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="GitHub" class="profile-logo">
+    <span class="profile-name">GitHub</span>
+  </a>
+        <a href="https://www.hackerrank.com/profile/sameermaurya333" class="profile-link" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/40/HackerRank_Icon-1000px.png" alt="Twitter" class="profile-logo">
+    <span class="profile-name">HackerRank</span>
+  </a>
+      </div>
+      <p>&copy; 2024 Sameer Maurya. All rights reserved.</p>
+</footer>
+  </div>
+
+<script>
+const certificates = [
+      { 
+        img: "Certificates/images/1.jpg",
+        thumb: "Certificates/images/1.jpg",
+        verify: null, 
+        desc: "Getting Started with AWS IoT", 
+        category: "other" 
+      },
+      { img: "Certificates/images/2.jpg", thumb: "Certificates/images/2.jpg", verify: null, desc: "AWS Databases", category: "other" },
+      { img: "Certificates/images/3.jpg", thumb: "Certificates/images/3.jpg", verify: "https://www.freecodecamp.org/certification/fccc9f0034a-6d2f-4a92-b8df-840c5312c85f/foundational-c-sharp-with-microsoft", desc: "Foundational C# with Microsoft", category: "freecodecamp" },
+      { img: "Certificates/images/4.jpg", thumb: "Certificates/images/4.jpg", verify: "https://www.hackerrank.com/certificates/866ac0b33af0", desc: "C# (Basic)", category: "hackerrank" },
+      { img: "Certificates/images/5.jpg", thumb: "Certificates/images/5.jpg", verify: null, desc: "Mastering Microservices Course", category: "other" },
+      { img: "Certificates/images/6.jpg", thumb: "Certificates/images/6.jpg", verify: null, desc: "Java Programming Course for Beginners", category: "other" },
+      { img: "Certificates/images/8.jpg", thumb: "Certificates/images/8.jpg", verify: "https://www.freecodecamp.org/certification/fccc9f0034a-6d2f-4a92-b8df-840c5312c85f/data-analysis-with-python-v7", desc: "Data Analysis with Python", category: "freecodecamp" },
+      { img: "Certificates/images/9.jpg", thumb: "Certificates/images/9.jpg", verify: "https://www.hackerrank.com/certificates/9910495c349f", desc: "GO (Basic)", category: "hackerrank" },
+      { img: "Certificates/images/10.jpg", thumb: "Certificates/images/10.jpg", verify: null, desc: "Google Play Listing", category: "other" },
+      { img: "Certificates/images/11.jpg", thumb: "Certificates/images/11.jpg", verify: null, desc: "AI for Beginners", category: "other" },
+      { img: "Certificates/images/12.jpg", thumb: "Certificates/images/12.jpg", verify: null, desc: "Introduction to Cybersecurity Awareness", category: "other" },
+      { img: "Certificates/images/13.jpg", thumb: "Certificates/images/13.jpg", verify: null, desc: "Introduction to Hacking Methodology", category: "other" },
+      { img: "Certificates/images/14.jpg", thumb: "Certificates/images/14.jpg", verify: "https://www.hackerrank.com/certificates/5cb870e112ef", desc: "Java (Basic)", category: "hackerrank" },
+      { img: "Certificates/images/15.jpg", thumb: "Certificates/images/15.jpg", verify: "https://www.freecodecamp.org/certification/fccc9f0034a-6d2f-4a92-b8df-840c5312c85f/javascript-algorithms-and-data-structures-v8", desc: "JavaScript Algorithms and Data Structures", category: "freecodecamp" },
+      { img: "Certificates/images/16.jpg", thumb: "Certificates/images/16.jpg", verify: "https://www.freecodecamp.org/certification/fccc9f0034a-6d2f-4a92-b8df-840c5312c85f/javascript-algorithms-and-data-structures", desc: "Legacy JavaScript Algorithms and Data Structures", category: "freecodecamp" },
+      { img: "Certificates/images/17.jpg", thumb: "Certificates/images/17.jpg", verify: "https://www.hackerrank.com/certificates/22b527ddf6d3", desc: "Problem Solving (Basic)", category: "hackerrank" },
+      { img: "Certificates/images/18.jpg", thumb: "Certificates/images/18.jpg", verify: "https://www.freecodecamp.org/certification/fccc9f0034a-6d2f-4a92-b8df-840c5312c85f/machine-learning-with-python-v7", desc: "Machine Learning with Python", category: "freecodecamp" },
+      { img: "Certificates/images/19.jpg", thumb: "Certificates/images/19.jpg", verify: "https://www.hackerrank.com/certificates/b8cd295e65d2", desc: "Problem Solving (Intermediate)", category: "hackerrank" },
+      { img: "Certificates/images/20.jpg", thumb: "Certificates/images/20.jpg", verify: "https://www.freecodecamp.org/certification/fccc9f0034a-6d2f-4a92-b8df-840c5312c85f/college-algebra-with-python-v8", desc: "College Algebra with Python", category: "freecodecamp" },
+      { img: "Certificates/images/21.jpg", thumb: "Certificates/images/21.jpg", verify: "https://www.hackerrank.com/certificates/c32d3599c137", desc: "Python (Basic)", category: "hackerrank" },
+      { img: "Certificates/images/22.jpg", thumb: "Certificates/images/22.jpg", verify: "https://www.freecodecamp.org/certification/fccc9f0034a-6d2f-4a92-b8df-840c5312c85f/responsive-web-design", desc: "Responsive Web Design", category: "freecodecamp" },
+      { img: "Certificates/images/23.jpg", thumb: "Certificates/images/23.jpg", verify: "https://www.freecodecamp.org/certification/fccc9f0034a-6d2f-4a92-b8df-840c5312c85f/scientific-computing-with-python-v7", desc: "Scientific Computing with Python", category: "freecodecamp" },
+      { img: "Certificates/images/24.jpg", thumb: "Certificates/images/24.jpg", verify: "https://www.hackerrank.com/certificates/0669b23d177c", desc: "Software Engineer", category: "hackerrank" },
+      { img: "Certificates/images/25.jpg", thumb: "Certificates/images/25.jpg", verify: "https://www.hackerrank.com/certificates/72c0340d0b9e", desc: "SQL (Basic)", category: "hackerrank" },
+      { img: "Certificates/images/26.jpg", thumb: "Certificates/images/26.jpg", verify: "https://www.hackerrank.com/certificates/e7f9815d8a3f", desc: "SQL (Intermediate)", category: "hackerrank" },
+      { img: "Certificates/images/27.jpg", thumb: "Certificates/images/27.jpg", verify: "https://www.hackerrank.com/certificates/08e459b61f91", desc: "SQL (Advanced)", category: "hackerrank" },
+      { 
+        img: "Certificates/images/28.jpg",
+        thumb: "Certificates/images/28.jpg", 
+        verify: "https://www.hackerrank.com/certificates/ddfb75e3e1d1", 
+        desc: "Angular (Basic)", 
+        category: "hackerrank" 
+      },
+
+      // Microsoft Certificates with thumbnails (renamed)
+      { img: "Certificates/images/microsoft/1.jpg", thumb: "Certificates/images/microsoft/thumbnails/1.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Create methods in C# console applications", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/2.jpg", thumb: "Certificates/images/microsoft/thumbnails/2.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Implement information protection and data loss", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/3.jpg", thumb: "Certificates/images/microsoft/thumbnails/3.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Write your first code using C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/4.jpg", thumb: "Certificates/images/microsoft/thumbnails/4.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Work with variable data in C# console", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/5.jpg", thumb: "Certificates/images/microsoft/thumbnails/5.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Create and run simple C# console applications", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/6.jpg", thumb: "Certificates/images/microsoft/thumbnails/6.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Govern and protect sensitive information", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/7.jpg", thumb: "Certificates/images/microsoft/thumbnails/7.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "AI Microsoft Learn", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/8.jpg", thumb: "Certificates/images/microsoft/thumbnails/8.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Add logic to C# console applications", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/9.jpg", thumb: "Certificates/images/microsoft/thumbnails/9.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "AI Skills Fest Challenge Manage AI data", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/10.jpg", thumb: "Certificates/images/microsoft/thumbnails/10.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Perform operations on arrays using helper methods in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/11.jpg", thumb: "Certificates/images/microsoft/thumbnails/11.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Format alphanumeric data for presentation in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/12.jpg", thumb: "Certificates/images/microsoft/thumbnails/12.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Challenge project - Work with variable data in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/13.jpg", thumb: "Certificates/images/microsoft/thumbnails/13.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Modify the content of strings using built-in string data type methods in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/14.jpg", thumb: "Certificates/images/microsoft/thumbnails/14.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Convert data types using casting and conversion techniques in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/15.jpg", thumb: "Certificates/images/microsoft/thumbnails/15.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Guided project - Work with variable data in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/16.jpg", thumb: "Certificates/images/microsoft/thumbnails/16.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Choose the correct data type in your C# code", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/17.jpg", thumb: "Certificates/images/microsoft/thumbnails/17.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Guided project - Develop conditional branching and looping structures in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/18.jpg", thumb: "Certificates/images/microsoft/thumbnails/18.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Challenge project - Develop branching and looping structures in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/19.jpg", thumb: "Certificates/images/microsoft/thumbnails/19.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Branch the flow of code using the switch-case construct in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/20.jpg", thumb: "Certificates/images/microsoft/thumbnails/20.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Add looping logic to your code using the do-while and while statements in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/21.jpg", thumb: "Certificates/images/microsoft/thumbnails/21.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Iterate through a code block using for statement in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/22.jpg", thumb: "Certificates/images/microsoft/thumbnails/22.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Control variable scope and logic using code blocks in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/23.jpg", thumb: "Certificates/images/microsoft/thumbnails/23.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Evaluate Boolean expressions to make decisions in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/24.jpg", thumb: "Certificates/images/microsoft/thumbnails/24.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Get started with Microsoft 365 Copilot Chat", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/25.jpg", thumb: "Certificates/images/microsoft/thumbnails/25.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Fundamental AI Concepts", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/26.jpg", thumb: "Certificates/images/microsoft/thumbnails/26.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Write your first C# code", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/27.jpg", thumb: "Certificates/images/microsoft/thumbnails/27.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Design a dream destination using Microsoft Copilot", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/28.jpg", thumb: "Certificates/images/microsoft/thumbnails/28.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Challenge project - Debug a C# console application using Visual Studio Code", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/29.jpg", thumb: "Certificates/images/microsoft/thumbnails/29.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Introduction to Microsoft 365 Copilot", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/30.jpg", thumb: "Certificates/images/microsoft/thumbnails/30.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Create and throw exceptions in C# console applications", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/31.jpg", thumb: "Certificates/images/microsoft/thumbnails/31.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Guided project - Debug and handle exceptions in a C# console application using Visual Studio Code", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/32.jpg", thumb: "Certificates/images/microsoft/thumbnails/32.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Implement exception handling in C# console applications", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/33.jpg", thumb: "Certificates/images/microsoft/thumbnails/33.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Create C# methods that return values", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/34.jpg", thumb: "Certificates/images/microsoft/thumbnails/34.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Review the principles of code debugging and exception handling", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/35.jpg", thumb: "Certificates/images/microsoft/thumbnails/35.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Guided project - Plan a Petting Zoo Visit", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/36.jpg", thumb: "Certificates/images/microsoft/thumbnails/36.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Create C# methods with parameters", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/37.jpg", thumb: "Certificates/images/microsoft/thumbnails/37.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Challenge project - Create a mini-game", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/38.jpg", thumb: "Certificates/images/microsoft/thumbnails/38.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Implement the Visual Studio Code debugging tools for C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/39.jpg", thumb: "Certificates/images/microsoft/thumbnails/39.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Write your first C# method", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/40.jpg", thumb: "Certificates/images/microsoft/thumbnails/40.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Manage compliance with Microsoft Purview for Microsoft 365 Copilot", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/41.jpg", thumb: "Certificates/images/microsoft/thumbnails/41.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Implement Adaptive Protection in Insider Risk Management", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/42.jpg", thumb: "Certificates/images/microsoft/thumbnails/42.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Identify and mitigate AI data security risks", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/43.jpg", thumb: "Certificates/images/microsoft/thumbnails/43.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Manage AI data security challenges with Microsoft Purview", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/44.jpg", thumb: "Certificates/images/microsoft/thumbnails/44.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Understand Microsoft Purview Insider Risk Management", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/45.jpg", thumb: "Certificates/images/microsoft/thumbnails/45.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Manage data loss prevention policies and reports in Microsoft 365", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/46.jpg", thumb: "Certificates/images/microsoft/thumbnails/46.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Apply sensitivity labels for data protection", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/47.jpg", thumb: "Certificates/images/microsoft/thumbnails/47.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Create and manage Insider Risk Management policies", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/48.jpg", thumb: "Certificates/images/microsoft/thumbnails/48.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Prepare for Microsoft Purview Insider Risk Management", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/49.jpg", thumb: "Certificates/images/microsoft/thumbnails/49.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Prevent data loss in Microsoft Purview", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/50.jpg", thumb: "Certificates/images/microsoft/thumbnails/50.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Implement information protection and data loss prevention with Microsoft Purview", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/51.jpg", thumb: "Certificates/images/microsoft/thumbnails/51.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Create and configure sensitivity labels with Microsoft Purview", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/52.jpg", thumb: "Certificates/images/microsoft/thumbnails/52.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Create and manage sensitive information types", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/53.jpg", thumb: "Certificates/images/microsoft/thumbnails/53.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Explore the possibilities with Microsoft 365 Copilot", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/54.jpg", thumb: "Certificates/images/microsoft/thumbnails/54.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Introduction to information security and compliance in Microsoft Purview", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/55.jpg", thumb: "Certificates/images/microsoft/thumbnails/55.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Describe cloud computing", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/56.jpg", thumb: "Certificates/images/microsoft/thumbnails/56.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Introduction to machine learning", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/57.jpg", thumb: "Certificates/images/microsoft/thumbnails/57.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Use AI for everyday tasks", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/58.jpg", thumb: "Certificates/images/microsoft/thumbnails/58.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Fundamentals of Generative AI", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/59.jpg", thumb: "Certificates/images/microsoft/thumbnails/59.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Describe Microsoft Security Copilot", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/60.jpg", thumb: "Certificates/images/microsoft/thumbnails/60.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Challenge project - Develop foreach and if-elseif-else structures to process array data in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/61.jpg", thumb: "Certificates/images/microsoft/thumbnails/61.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Use Boolean logic in Python", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/62.jpg", thumb: "Certificates/images/microsoft/thumbnails/62.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Introduction to Python", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/63.jpg", thumb: "Certificates/images/microsoft/thumbnails/63.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Write your first Python programs", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/64.jpg", thumb: "Certificates/images/microsoft/thumbnails/64.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Guided project - Develop foreach and if-elseif-else structures to process array data in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/65.jpg", thumb: "Certificates/images/microsoft/thumbnails/65.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Call methods from the .NET Class Library using C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/66.jpg", thumb: "Certificates/images/microsoft/thumbnails/66.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Add decision logic to your code using `if`, `else`, and `else if` statements in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/67.jpg", thumb: "Certificates/images/microsoft/thumbnails/67.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Store and iterate through sequences of data using Arrays and the foreach statement in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/68.jpg", thumb: "Certificates/images/microsoft/thumbnails/68.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Create readable code with conventions, whitespace, and comments in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/69.jpg", thumb: "Certificates/images/microsoft/thumbnails/69.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Install and configure Visual Studio Code for C# development", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/70.jpg", thumb: "Certificates/images/microsoft/thumbnails/70.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Perform basic string formatting in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/71.jpg", thumb: "Certificates/images/microsoft/thumbnails/71.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Store and retrieve data using literal and variable values in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/72.jpg", thumb: "Certificates/images/microsoft/thumbnails/72.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Guided project - Calculate final GPA", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/73.jpg", thumb: "Certificates/images/microsoft/thumbnails/73.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Guided project - Calculate and print student grades", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/74.jpg", thumb: "Certificates/images/microsoft/thumbnails/74.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Perform basic operations on numbers in C#", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/75.jpg", thumb: "Certificates/images/microsoft/thumbnails/75.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Improve performance with a cache in a .NET Aspire project", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/76.jpg", thumb: "Certificates/images/microsoft/thumbnails/76.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Introduction to .NET Aspire", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/77.jpg", thumb: "Certificates/images/microsoft/thumbnails/77.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Introduction to solutions for Microsoft Power Platform", category: "Microsoft" },
+      { img: "Certificates/images/microsoft/78.jpg", thumb: "Certificates/images/microsoft/thumbnails/78.webp", verify: "https://learn.microsoft.com/en-us/users/sameermaurya-7807/achievements", desc: "Get started with Power Apps canvas apps", category: "Microsoft" },
+    ];
+
+// DOM Elements
+const gallery = document.getElementById('gallery');
+const popup = document.getElementById('popup');
+const popupImg = document.getElementById('popup-img');
+const popupDesc = document.getElementById('popup-desc');
+const verifyBtn = document.getElementById('verify-btn');
+const spinner = document.getElementById('spinner');
+const errorMessage = document.getElementById('error-message');
+const certCounter = document.getElementById('cert-counter');
+
+let currentIndex = 0;
+
+// Add search functionality
+const searchInput = document.getElementById('search-input');
+let currentFilter = 'all';
+
+// Pagination variables
+const ITEMS_PER_PAGE = 9;
+let currentPage = 1;
+let totalPages = 1;
+
+// Function to filter certificates based on search and category
+function filterCertificates() {
+  const searchTerm = searchInput.value.toLowerCase();
+  const filteredCerts = certificates.filter(cert => {
+    const matchesSearch = cert.desc.toLowerCase().includes(searchTerm);
+    const matchesCategory = currentFilter === 'all' || cert.category === currentFilter;
+    return matchesSearch && matchesCategory;
+  });
+
+  // Update pagination
+  updatePagination(filteredCerts);
+  
+  // Calculate start and end indices for current page
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentPageCerts = filteredCerts.slice(startIndex, endIndex);
+  
+  gallery.innerHTML = '';
+  currentPageCerts.forEach((cert, index) => {
+    const imgContainer = document.createElement('div');
+    imgContainer.setAttribute('role', 'listitem');
+    
+    const img = document.createElement('img');
+    img.src = encodeURI(cert.thumb);
+    img.alt = cert.desc;
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.width = "300";
+    img.height = "200";
+    img.onclick = () => openPopup(certificates.indexOf(cert));
+    
+    imgContainer.appendChild(img);
+    gallery.appendChild(imgContainer);
+  });
+  
+  updateCertCounter(filteredCerts.length);
+}
+
+// Debounce search input
+let searchTimeout;
+searchInput.addEventListener('input', () => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(filterCertificates, 300);
+});
+
+// Update the filter buttons click handler
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    filterCertificates();
+  });
+});
+
+// Optimize popup image loading
+function openPopup(index) {
+  currentIndex = index;
+  const cert = certificates[index];
+  
+  popup.style.display = 'flex';
+  spinner.style.display = 'block';
+  errorMessage.style.display = 'none';
+  popupImg.style.display = 'block';
+  popupImg.src = encodeURI(cert.img);
+  popupDesc.textContent = cert.desc;
+
+  if (cert.verify) {
+    verifyBtn.href = cert.verify;
+    verifyBtn.style.display = 'block';
+  } else {
+    verifyBtn.style.display = 'none';
+  }
+
+  // Preload next and previous images
+  const nextIndex = (index + 1) % certificates.length;
+  const prevIndex = (index - 1 + certificates.length) % certificates.length;
+  new Image().src = certificates[nextIndex].img;
+  new Image().src = certificates[prevIndex].img;
+}
+
+// Close popup
+function closePopup() {
+  popup.style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+// Image loaded handler
+function imageLoaded() {
+  spinner.style.display = 'none';
+  errorMessage.style.display = 'none';
+  popupImg.style.display = 'block';
+}
+
+// Image error handler
+function imageError() {
+  spinner.style.display = 'none';
+  errorMessage.style.display = 'block';
+  popupImg.style.display = 'block'; // Show the image element even if broken
+  popupImg.alt = "Failed to load: " + certificates[currentIndex].desc;
+}
+
+// Retry loading image
+function retryLoading() {
+  popupImg.src = encodeURI(certificates[currentIndex].img);
+}
+
+// Navigate between certificates
+function navigate(direction) {
+  currentIndex = (currentIndex + direction + certificates.length) % certificates.length;
+  openPopup(currentIndex);
+}
+
+// Download certificate
+function downloadCertificate() {
+  const link = document.createElement('a');
+  // Use original high quality image for download
+  link.href = certificates[currentIndex].img;
+  link.download = certificates[currentIndex].desc.replace(/ /g, '_') + '.jpg';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// Share certificate
+function shareCertificate() {
+  const cert = certificates[currentIndex];
+  const shareData = {
+    title: `My Certificate: ${cert.desc}`,
+    text: `Check out my ${cert.desc} certificate!`,
+    url: cert.verify || window.location.href
+  };
+  
+  if (navigator.share) {
+    navigator.share(shareData).catch(err => {
+      console.log('Error sharing:', err);
+      fallbackShare();
+    });
+  } else {
+    fallbackShare();
+  }
+}
+
+function fallbackShare() {
+  const cert = certificates[currentIndex];
+  const text = `Check out my ${cert.desc} certificate! ${cert.verify || ''}`;
+  alert(`Share this link:\n\n${text}`);
+}
+
+// Update certificate counter
+function updateCertCounter(totalCerts) {
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE - 1, totalCerts);
+  certCounter.textContent = `Showing ${startIndex}-${endIndex} of ${totalCerts} certificates`;
+}
+
+// Update pagination controls
+function updatePagination(filteredCerts) {
+  totalPages = Math.ceil(filteredCerts.length / ITEMS_PER_PAGE);
+  const pageNumbers = document.getElementById('page-numbers');
+  pageNumbers.innerHTML = '';
+  
+  // Show first page, current page, and last page
+  const pagesToShow = [];
+  if (totalPages <= 5) {
+    for (let i = 1; i <= totalPages; i++) {
+      pagesToShow.push(i);
+    }
+  } else {
+    pagesToShow.push(1);
+    if (currentPage > 2) pagesToShow.push('...');
+    if (currentPage > 1 && currentPage < totalPages) pagesToShow.push(currentPage);
+    if (currentPage < totalPages - 1) pagesToShow.push('...');
+    pagesToShow.push(totalPages);
+  }
+  
+  pagesToShow.forEach(page => {
+    const pageBtn = document.createElement('button');
+    pageBtn.className = 'page-btn';
+    if (page === '...') {
+      pageBtn.textContent = '...';
+      pageBtn.disabled = true;
+    } else {
+      pageBtn.textContent = page;
+      if (page === currentPage) {
+        pageBtn.classList.add('active');
+      }
+      pageBtn.onclick = () => goToPage(page);
+    }
+    pageNumbers.appendChild(pageBtn);
+  });
+  
+  // Update prev/next buttons
+  document.getElementById('prev-page').disabled = currentPage === 1;
+  document.getElementById('next-page').disabled = currentPage === totalPages;
+}
+
+// Go to specific page
+function goToPage(page) {
+  currentPage = page;
+  filterCertificates();
+}
+
+// Initialize everything
+function init() {
+  // Add pagination event listeners
+  document.getElementById('prev-page').addEventListener('click', () => {
+    if (currentPage > 1) {
+      goToPage(currentPage - 1);
+    }
+  });
+  
+  document.getElementById('next-page').addEventListener('click', () => {
+    if (currentPage < totalPages) {
+      goToPage(currentPage + 1);
+    }
+  });
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (popup.style.display === 'flex') {
+      if (e.key === 'Escape') {
+        closePopup();
+      } else if (e.key === 'ArrowLeft') {
+        navigate(-1);
+      } else if (e.key === 'ArrowRight') {
+        navigate(1);
+      }
+    }
+  });
+
+  // Initial filter
+  filterCertificates();
+}
+
+// Initialize on DOM content loaded
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
